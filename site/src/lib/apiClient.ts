@@ -76,7 +76,7 @@ export function getCsrfToken(): string {
   return match ? decodeURIComponent(match[1]) : '';
 }
 
-async function baseFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
+async function rawFetch(url: string, options: RequestInit = {}): Promise<Response> {
   const method = (options.method ?? 'GET').toUpperCase();
   const csrfHeaders: Record<string, string> =
     method !== 'GET' && method !== 'HEAD'
@@ -102,6 +102,12 @@ async function baseFetch<T>(url: string, options: RequestInit = {}): Promise<T> 
     }
     throw new ApiError(response.status, response.statusText, errorData);
   }
+
+  return response;
+}
+
+async function baseFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
+  const response = await rawFetch(url, options);
 
   // Handle empty responses (e.g., 204 No Content)
   if (response.status === 204) {
@@ -138,10 +144,10 @@ export const apiClient = {
         method: 'POST',
         body: JSON.stringify(credentials),
       }),
-    logout: () =>
-      baseFetch<void>('/logout', {
-        method: 'POST',
-      }),
+    logout: async (): Promise<{ redirectUrl: string | null }> => {
+      const response = await rawFetch('/logout', { method: 'POST' });
+      return { redirectUrl: response.headers.get('x-redirect') };
+    },
     getSSOProviders: () => baseFetch<SSOProvider[]>('/sso-providers'),
   },
 
