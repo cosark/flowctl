@@ -159,6 +159,7 @@ type OIDCConfig struct {
 	Issuer          string               `koanf:"issuer" validate:"required,url"`
 	AuthURL         string               `koanf:"auth_url" validate:"omitempty,url"`
 	TokenURL        string               `koanf:"token_url" validate:"omitempty,url"`
+	LogoutEnabled   bool                 `koanf:"logout_enabled"`
 	LogoutURL       string               `koanf:"logout_url" validate:"omitempty,url"`
 	RedirectURL     string               `koanf:"redirect_url" validate:"omitempty,url"`
 	ClientID        string               `koanf:"client_id" validate:"required"`

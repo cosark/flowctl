@@ -132,18 +132,21 @@ func (h *Handler) initOIDC() error {
 			ClientID: oauthConfig.ClientID,
 		})
 
-		var discoveryClaims struct {
-			EndSessionEndpoint string `json:"end_session_endpoint"`
-		}
-		if err := provider.Claims(&discoveryClaims); err != nil {
-			h.logger.Warn("could not read end_session_endpoint from provider discovery",
-				"provider", oauthConfig.Name,
-				"error", err)
-		}
+		var endSessionEndpoint string
+		if oauthConfig.LogoutEnabled {
+			var discoveryClaims struct {
+				EndSessionEndpoint string `json:"end_session_endpoint"`
+			}
+			if err := provider.Claims(&discoveryClaims); err != nil {
+				h.logger.Warn("could not read end_session_endpoint from provider discovery",
+					"provider", oauthConfig.Name,
+					"error", err)
+			}
 
-		endSessionEndpoint := discoveryClaims.EndSessionEndpoint
-		if oauthConfig.LogoutURL != "" {
-			endSessionEndpoint = oauthConfig.LogoutURL
+			endSessionEndpoint = discoveryClaims.EndSessionEndpoint
+			if oauthConfig.LogoutURL != "" {
+				endSessionEndpoint = oauthConfig.LogoutURL
+			}
 		}
 
 		h.authconfig[oauthConfig.Name] = OIDCAuthConfig{

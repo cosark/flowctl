@@ -69,6 +69,10 @@ issuer = ""
 redirect_url = ""
 # (optional) Token URL of the OIDC provider
 token_url = ""
+# (optional) Also log out of the SSO provider when logging out of flowctl (default: false)
+logout_enabled = false
+# (optional) Override the provider's discovered logout URL; requires logout_enabled = true
+logout_url = ""
 # (optional) Sign in label
 label = ""
 # (optional) Auto create users
