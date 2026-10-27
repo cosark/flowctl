@@ -262,6 +262,8 @@
 
 <div class="flow-header">
     <FlowHero
+        version={data.flowMeta?.meta?.version}
+        versionsUrl={canViewFlowConfig ? `/view/${encodedNamespace}/flows/${flowId}/versions` : undefined}
         name={data.flowMeta?.meta?.name || "Loading..."}
         description={data.flowMeta?.meta?.description || ""}
     />
@@ -276,7 +278,17 @@
 <div class="tab-content">
     {#if activeTab === "run"}
         <div class="container" style="--container-max: 52rem; --container-pad: 0">
-            {#if showRerunBanner}
+            {#if data.rerunVersion && data.flowMeta?.meta?.version && data.rerunVersion !== data.flowMeta.meta.version}
+                <div role="alert" data-variant="warning" class="mb-4">
+                    <div>
+                        <strong>Flow version changed.</strong>
+                        The previous execution used version {data.rerunVersion}.
+                        This run will use version {data.flowMeta.meta.version}.
+                    </div>
+                </div>
+            {/if}
+
+            {#if showRerunBanner && rerunFromExecId}
                 <div role="alert" class="mb-4 hstack gap-2 items-start justify-between">
                     <div class="hstack gap-2 flex-1 items-start">
                         <IconInfoCircle size={20} style="color: var(--primary)" />

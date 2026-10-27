@@ -43,6 +43,7 @@ export const load: PageLoad = async ({ params, parent, url }) => {
       flowMeta,
       namespaceId,
       rerunFromExecId,
+      rerunVersion: executionData?.flow_version,
       executionInput: executionData?.input || null,
       userSchedules: schedules.schedules || [],
       userSchedulesPageCount: schedules.page_count || 1,

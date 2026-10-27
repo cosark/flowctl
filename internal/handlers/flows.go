@@ -520,6 +520,17 @@ func (h *Handler) HandleGetFlowMeta(c echo.Context) error {
 		return wrapError(ErrResourceNotFound, "flow not found", err, nil)
 	}
 
+	if value := c.QueryParam("version"); value != "" {
+		version, err := parseVersion(value)
+		if err != nil {
+			return err
+		}
+		flow, err = h.co.GetFlowVersion(c.Request().Context(), req.FlowID, namespace, version)
+		if err != nil {
+			return flowVersionError(err)
+		}
+	}
+
 	// Get scheduled executions for this flow
 	scheduledExecs, err := h.co.GetScheduledExecutionsByFlow(c.Request().Context(), flow.Meta.DBID, namespace)
 	if err != nil {

@@ -10,6 +10,9 @@ import type {
   FlowsPaginateResponse,
   FlowInputsResp,
   FlowMetaResp,
+  FlowVersionsResponse,
+  FlowVersionSource,
+  FlowVersionDiff,
   FlowTriggerResp,
   FlowCreateReq,
   FlowCreateResp,
@@ -314,8 +317,18 @@ export const apiClient = {
       }),
     getInputs: (namespace: string, flowId: string) =>
       baseFetch<FlowInputsResp>(`/api/v1/${encodeURIComponent(namespace)}/flows/${flowId}/inputs`),
-    getMeta: (namespace: string, flowId: string) =>
-      baseFetch<FlowMetaResp>(`/api/v1/${encodeURIComponent(namespace)}/flows/${flowId}/meta`),
+    getMeta: (namespace: string, flowId: string, version?: number) =>
+      baseFetch<FlowMetaResp>(`/api/v1/${encodeURIComponent(namespace)}/flows/${flowId}/meta${version ? `?version=${version}` : ''}`),
+    versions: {
+      list: (namespace: string, flowId: string, params: { page?: number; count?: number } = {}) =>
+        baseFetch<FlowVersionsResponse>(`/api/v1/${encodeURIComponent(namespace)}/flows/${flowId}/versions${buildQueryString(params)}`),
+      get: (namespace: string, flowId: string, version: number) =>
+        baseFetch<FlowVersionSource>(`/api/v1/${encodeURIComponent(namespace)}/flows/${flowId}/versions/${version}`),
+      activate: (namespace: string, flowId: string, version: number) =>
+        baseFetch<{ id: string; version: number }>(`/api/v1/${encodeURIComponent(namespace)}/flows/${flowId}/versions/${version}/activate`, { method: 'POST' }),
+      diff: (namespace: string, flowId: string, from: number, to?: number) =>
+        baseFetch<FlowVersionDiff>(`/api/v1/${encodeURIComponent(namespace)}/flows/${flowId}/versions/diff${buildQueryString({ from, to })}`),
+    },
     trigger: (namespace: string, flowId: string, inputs: Record<string, any>) => {
       const formData = new FormData();
       Object.entries(inputs).forEach(([key, value]) => {
