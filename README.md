@@ -46,6 +46,11 @@ Check out the [demo](https://demo.flowctl.net) to see it in action.
 
 Use the provided [docker-compose.yml](https://raw.githubusercontent.com/cvhariharan/flowctl/refs/heads/master/docker-compose.yaml) file.
 
+### One-Click Deploy
+
+<a href="https://repocloud.io/details/Flowctl/"><img src="https://d16t0pc4846x52.cloudfront.net/deploylobe.svg" alt="Deploy on RepoCloud" height="42"></a>
+<a href="https://railway.com/deploy/flowctl"><img src="https://railway.com/button.svg" alt="Deploy on Railway" height="42"></a>
+
 ---
 
 #### Binary
