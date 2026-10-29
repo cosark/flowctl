@@ -585,14 +585,15 @@ func (h *Handler) HandleCreateFlow(c echo.Context) error {
 
 	flow := models.Flow{
 		Meta: models.Metadata{
-			ID:            GenerateSlug(req.Meta.Name),
-			Name:          req.Meta.Name,
-			Description:   req.Meta.Description,
-			Prefix:        req.Meta.Prefix,
-			Namespace:     namespace,
-			AllowOverlap:  req.Meta.AllowOverlap,
-			MaxRetries:    req.Meta.MaxRetries,
-			ExecutionMode: models.ExecutionMode(req.Meta.ExecutionMode),
+			ID:              GenerateSlug(req.Meta.Name),
+			Name:            req.Meta.Name,
+			Description:     req.Meta.Description,
+			Prefix:          req.Meta.Prefix,
+			Namespace:       namespace,
+			AllowOverlap:    req.Meta.AllowOverlap,
+			UserSchedulable: req.Meta.UserSchedulable,
+			MaxRetries:      req.Meta.MaxRetries,
+			ExecutionMode:   models.ExecutionMode(req.Meta.ExecutionMode),
 		},
 		Inputs:    convertFlowInputsReqToInputs(req.Inputs),
 		Actions:   convertFlowActionsReqToActions(req.Actions),

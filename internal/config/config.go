@@ -25,6 +25,7 @@ type Config struct {
 	Scheduler  SchedulerConfig  `koanf:"scheduler"`
 	Logger     Logger           `koanf:"logger"`
 	Metrics    Metrics          `koanf:"metrics"`
+	MCP        MCPConfig        `koanf:"mcp"`
 	Messengers MessengersConfig `koanf:"messengers"`
 }
 
@@ -44,9 +45,16 @@ func (c *Config) Validate() error {
 
 const DefaultMaxFlowImportSize = 256 * 1024
 
+const DefaultMCPMaxBodySize = 1024 * 1024
+
 type Metrics struct {
 	Enabled bool   `koanf:"enabled"`
 	Path    string `koanf:"path"`
+}
+
+type MCPConfig struct {
+	Enabled     bool  `koanf:"enabled"`
+	MaxBodySize int64 `koanf:"max_body_size" validate:"min=0"`
 }
 
 type BrandingConfig struct {
@@ -224,6 +232,9 @@ func Load(configPath string) (Config, error) {
 	if config.App.MaxFlowImportSize <= 0 {
 		config.App.MaxFlowImportSize = DefaultMaxFlowImportSize
 	}
+	if config.MCP.MaxBodySize <= 0 {
+		config.MCP.MaxBodySize = DefaultMCPMaxBodySize
+	}
 	if config.Scheduler.ExecutionRetentionInterval == 0 {
 		config.Scheduler.ExecutionRetentionInterval = time.Hour
 	}
@@ -290,6 +301,10 @@ func GetDefaultConfig() Config {
 			Directory:     "/var/log/flowctl",
 			RetentionTime: 0,
 			ScanInterval:  1 * time.Hour,
+		},
+		MCP: MCPConfig{
+			Enabled:     false,
+			MaxBodySize: DefaultMCPMaxBodySize,
 		},
 		Messengers: MessengersConfig{
 			Email: SMTPConfig{
